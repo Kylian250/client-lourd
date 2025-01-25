@@ -18,6 +18,13 @@ public class Produit {
         this.prixUnitaire = prixUnitaire;
     }
 
+    public Produit(int id_produit, String nom, int quantite, Double prixUnitaire){
+        this.id_produit = id_produit;
+        this.nom = nom;
+        this.quantite = quantite;
+        this.prixUnitaire = prixUnitaire;
+    }
+
     public String getNom() {
         return nom;
     }
@@ -40,5 +47,9 @@ public class Produit {
 
     public void setPrixUnitaire(double prixUnitaire) {
         this.prixUnitaire = prixUnitaire;
+    }
+
+    public int getId_produit(){
+        return id_produit;
     }
 }

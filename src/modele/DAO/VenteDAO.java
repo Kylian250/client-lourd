@@ -54,11 +54,11 @@ public class VenteDAO {
             statement.setDate(3, endDate);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");
+                int id_vente = resultSet.getInt("id_vente");
                 Date date = resultSet.getDate("date_vente");
-                int quantite = resultSet.getInt("quantite");
+                int quantiter = resultSet.getInt("quantiter");
                 Produit produit = new Produit(produitId, "", 0); // Produits déjà en base
-                ventes.add(new Vente(id, date, quantite, produit));
+                ventes.add(new Vente(id_vente, date, quantiter, produit));
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération des ventes : " + e.getMessage());
