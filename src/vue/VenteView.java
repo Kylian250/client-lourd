@@ -5,63 +5,61 @@ import modele.Utilisateur;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.sql.Date;
 
 public class VenteView extends JFrame {
     private Utilisateur utilisateur;
 
+    private JFrame frame;
+    private JTextField txtQuantiter;
+    private JTextField txtDate_vente;
+    private JTextField txtId_produit;
+    private JButton btnAjouterVente;
+
     public VenteView(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
    
-        setTitle("Gestion des Ventes");
-        setLayout(new FlowLayout());
-        setSize(400, 200);
+        frame = new JFrame("Gestion des Ventes");
+        frame.setLayout(new FlowLayout());
+        frame.setSize(400, 200);
 
-        JButton ajouterVenteButton = new JButton("Ajouter Vente");
-        JButton modifierVenteButton = new JButton("Modifier Vente");
-        JButton supprimerVenteButton = new JButton("Supprimer Vente");
 
-        ajouterVenteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code pour ajouter un produit
-            }
-        });
-
-        modifierVenteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code pour modifier un produit
-            }
-        });
-
-        supprimerVenteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (utilisateur.getRole().equals("manager")) {
-                    JOptionPane.showMessageDialog(null, "Vous n'avez pas la permission de supprimer des produits.");
-                } else {
-                    // Code pour supprimer un produit
-                }
-            }
-        });
-
-        // Désactivation du bouton suppression si l'utilisateur est un manager
-        if (utilisateur.getRole().equals("manager")) {
-            supprimerVenteButton.setEnabled(false); // Grise le bouton
-        }
-
-        // Ajouter les boutons à la fenêtre
-        add(ajouterVenteButton);
-        add(modifierVenteButton);
-        add(supprimerVenteButton);
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
+        JLabel labelQuantiter = new JLabel("Quantiter du produit:");
+        txtQuantiter = new JTextField(20);
+        JLabel labelDate_vente = new JLabel("Date de vente:");
+        txtDate_vente = new JTextField(20);
+        JLabel labelId_produit = new JLabel("Id produit:");
+        txtId_produit = new JTextField(20);
+        btnAjouterVente = new JButton("Ajouter Vente");
+        frame.add(labelQuantiter);
+        frame.add(txtQuantiter);
+        frame.add(labelDate_vente);
+        frame.add(txtDate_vente);
+        frame.add(labelId_produit);
+        frame.add(txtId_produit);
+        frame.add(btnAjouterVente);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
+    public int getQuantiter() {
+        return Integer.parseInt(txtQuantiter.getText());
+    }
+
+    public Date getDate_vente() {
+        return Date.valueOf(txtDate_vente.getText());
+    }
+
+    public int getId_produit(){
+        return Integer.parseInt(txtId_produit.getText());
+    }
+
+    public void setAjouterVenteListener(ActionListener listener) {
+        btnAjouterVente.addActionListener(listener);
+    }
+   /*  public static void main(String[] args) {
         // Exemple d'utilisation avec un utilisateur fictif
         Utilisateur utilisateur = new Utilisateur("manager"); // Remplacer par un utilisateur réel
         new VenteView(utilisateur);
-    }
+    }*/
 }

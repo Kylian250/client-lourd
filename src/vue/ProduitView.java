@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ProduitView extends JFrame{
+public class ProduitView extends JFrame {
     private Utilisateur utilisateur;
 
     private JFrame frame;
@@ -21,18 +21,6 @@ public class ProduitView extends JFrame{
         frame = new JFrame("Gestion des produits");
         frame.setLayout(new FlowLayout());
         frame.setSize(400, 200);
-
-        JButton ajouterProduitButton = new JButton("Ajouter Produit");
-        JButton modifierProduitButton = new JButton("Modifier Produit");
-        JButton supprimerProduitButton = new JButton("Supprimer Produit");
-
-        ajouterProduitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            // Code pour ajouter un produit
-            }
-            });
-
 
         JLabel labelNom = new JLabel("Nom du produit:");
         txtNom = new JTextField(20);
@@ -50,6 +38,7 @@ public class ProduitView extends JFrame{
         frame.add(btnAjouterProduit);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
     }
 
     public String getNomProduit() {
@@ -67,4 +56,5 @@ public class ProduitView extends JFrame{
     public void setAjouterProduitListener(ActionListener listener) {
         btnAjouterProduit.addActionListener(listener);
     }
+
 }

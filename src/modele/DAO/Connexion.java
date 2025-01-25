@@ -12,21 +12,21 @@ public class Connexion {
     private static final String URL = "jdbc:mysql://localhost:3306/gestion_de_stock";
     private static final String USER = "root";
     private static final String PASSWORD = "";
-    private static Connection connexion;
+    
 
     private Connexion() {
 
     }
 
     public static Connection getConnection() {
-        if (connexion == null) {
+        
             try {
-                connexion = DriverManager.getConnection(URL, USER, PASSWORD);
+                return DriverManager.getConnection(URL, USER, PASSWORD);
             } catch (SQLException e) {
                 System.out.println("Erreur de connexion à la base de données : " + e.getMessage());
+                return null;
             }
-        }
-        return connexion;
+       
     }
 
      public static Utilisateur verifierConnexion(String nom, String motDePasse) {

@@ -24,6 +24,25 @@ public class VenteDAO {
             System.out.println("Erreur lors de l'ajout de la vente : " + e.getMessage());
         }
     }
+ 
+    
+    public void supprimerVente(int id){
+        String query = "DELETE FROM vente WHERE id_vente = ?";
+        try (Connection connection = Connexion.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, id);
+    
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Vente supprimé avec succès.");
+            } else {
+                System.out.println("Aucune vente trouvé avec cette id.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la suppression de la vente : " + e.getMessage());
+        }
+    }
+
 
     public List<Vente> getVentesByProduitAndDateRange(int produitId, Date startDate, Date endDate) {
         List<Vente> ventes = new ArrayList<>();
