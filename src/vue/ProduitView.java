@@ -48,7 +48,7 @@ public class ProduitView extends JFrame {
         frame.setVisible(true);
 
         // Champs pour générer le rapport
-        JLabel labelStartDate = new JLabel("Date de début (YYYY-MM-DD):");
+      /*   JLabel labelStartDate = new JLabel("Date de début (YYYY-MM-DD):");
         txtFieldStartDate = new JTextField(10);
         JLabel labelEndDate = new JLabel("Date de fin (YYYY-MM-DD):");
         txtFieldEndDate = new JTextField(10);
@@ -70,10 +70,26 @@ public class ProduitView extends JFrame {
 
         frame.add(new JScrollPane(reportArea));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        frame.setVisible(true);*/
     }
 
-    public String getProduitByNom() {
+    public String getNomProduit() {
+        return txtNom.getText();
+    }
+
+    public double getPrixProduit() {
+        return Double.parseDouble(txtPrix.getText());
+    }
+
+    public int getQuantiterProduit() {
+        return Integer.parseInt(txtQuantiter.getText());
+    }
+
+    public void setAjouterProduitListener(ActionListener listener) {
+        btnAjouterProduit.addActionListener(listener);
+    }
+
+    /*public String getProduitByNom() {
         return txtFieldNom.getText();
     }
 
@@ -98,24 +114,10 @@ public class ProduitView extends JFrame {
 
     public void setGenererRapportListener(ActionListener listener) {
         btnGenererRapport.addActionListener(listener);
-    }
+    }*/
 
 
 
-    public String getNomProduit() {
-        return txtNom.getText();
-    }
-
-    public double getPrixProduit() {
-        return Double.parseDouble(txtPrix.getText());
-    }
-
-    public int getQuantiterProduit() {
-        return Integer.parseInt(txtQuantiter.getText());
-    }
-
-    public void setAjouterProduitListener(ActionListener listener) {
-        btnAjouterProduit.addActionListener(listener);
-    }
+    
 
 }
