@@ -13,15 +13,24 @@ import modele.Vente;
 
 public class VenteDAO {
     public void ajouterVente(Vente vente) {
-        String query = "INSERT INTO vente (quantiter, date_vente, id_produit) VALUES (?, ?, ?)";
+        String query = "INSERT INTO vente (date_vente, id_produit) VALUES (?, ?)";
         try (Connection connection = Connexion.getConnection();
                 PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, vente.getQuantiter());
-            statement.setDate(2, vente.getDate());
-            statement.setInt(3, vente.getId_produit());
-            statement.executeUpdate();
+        
+            statement.setDate(1, vente.getDate());
+            statement.setInt(2, vente.getId_produit());
+    
+            int rowsAffected = statement.executeUpdate();
+            
+            // Si aucune ligne n'a été affectée, cela signifie que l'insertion a échoué
+            if (rowsAffected > 0) {
+                System.out.println("Vente ajoutée avec succès.");
+            } else {
+                System.out.println("Erreur : La vente n'a pas été ajoutée.");
+            }
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout de la vente : " + e.getMessage());
+            e.printStackTrace(); // Pour obtenir un détail plus précis de l'erreur
         }
     }
  
@@ -44,21 +53,22 @@ public class VenteDAO {
     }
 
 
-    public List<Vente> getVentesByProduitAndDateRange(int produitId, Date startDate, Date endDate) {
+
+    public List<Vente> getAllVentes() {
         List<Vente> ventes = new ArrayList<>();
-        String query = "SELECT * FROM ventes WHERE produit_id = ? AND date_vente BETWEEN ? AND ?";
+        String query = "SELECT * FROM vente"; // Requête SQL pour récupérer toutes les ventes
         try (Connection connection = Connexion.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, produitId);
-            statement.setDate(2, startDate);
-            statement.setDate(3, endDate);
-            ResultSet resultSet = statement.executeQuery();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+    
             while (resultSet.next()) {
                 int id_vente = resultSet.getInt("id_vente");
-                Date date = resultSet.getDate("date_vente");
-                int quantiter = resultSet.getInt("quantiter");
-                Produit produit = new Produit(produitId, "", 0); // Produits déjà en base
-                ventes.add(new Vente(id_vente, date, quantiter, produit));
+                int id_produit = resultSet.getInt("id_produit");
+                Date date_vente = resultSet.getDate("date_vente");
+    
+                // Crée l'objet Produit (tu peux récupérer plus de détails sur le produit si nécessaire)
+                Produit produit = new Produit(id_produit, "", 0); // Produit simplifié avec seulement l'id
+                ventes.add(new Vente(id_vente, id_produit, date_vente, produit));
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération des ventes : " + e.getMessage());

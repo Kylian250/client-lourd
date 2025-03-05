@@ -2,9 +2,7 @@ package vue;
 
 import javax.swing.*;
 import modele.Utilisateur;
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MenuPrincipal extends JFrame {
@@ -13,39 +11,41 @@ public class MenuPrincipal extends JFrame {
     public MenuPrincipal(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
         setTitle("Menu Principal");
-        setLayout(new FlowLayout());
-        setSize(400, 200);
+        setSize(400, 250);
+        setLocationRelativeTo(null); // Centre la fenêtre sur l'écran
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Ajoute des marges pour l'espacement
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0; gbc.gridy = 0;
+
+        // Création des boutons
         JButton gestionProduitButton = new JButton("Gestion Produit");
         JButton gestionVenteButton = new JButton("Gestion Ventes");
         JButton gestionFournisseurButton = new JButton("Gestion Fournisseur");
-        gestionProduitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new GestionProduitView(utilisateur);
-            }
-        });
-        gestionVenteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new GestionVenteView(utilisateur);
-            }
-        });
-        gestionFournisseurButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new GestionFournisseurView(utilisateur);
-            }
-        });
-        add(gestionProduitButton);
-        add(gestionVenteButton);
-        add(gestionFournisseurButton);
+        JButton supprimerProduitButton = new JButton("Supprimer Produit"); // Bouton pour supprimer des produits
+
+        // Ajout des boutons avec positionnement propre
+        add(gestionProduitButton, gbc);
+        gbc.gridy++;
+        add(gestionVenteButton, gbc);
+        gbc.gridy++;
+        add(gestionFournisseurButton, gbc);
+        
+        
+
+        // Listeners pour ouvrir les autres vues
+        gestionProduitButton.addActionListener(e -> new GestionProduitView(utilisateur));
+        gestionVenteButton.addActionListener(e -> new GestionVenteView(utilisateur));
+        gestionFournisseurButton.addActionListener(e -> new GestionFournisseurView(utilisateur));
+
         // Désactivation des options en fonction du rôle
         if (utilisateur.getRole().equals("manager")) {
-            gestionProduitButton.setEnabled(true); // Manager peut gérer les produits
-            gestionVenteButton.setEnabled(true); // Manager peut gérer les ventes
-            gestionFournisseurButton.setEnabled(true); // Manager peut gérer les fournisseurs
+            supprimerProduitButton.setEnabled(false); // Désactive le bouton de suppression pour les managers
         }
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
+
+        setVisible(true); // Toujours à la fin pour éviter les bugs d'affichage
     }
 }

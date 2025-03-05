@@ -3,35 +3,41 @@ package modele;
 import java.sql.Date;
 
 public class Vente {
-    private Produit produit;
-    private int quantiter;
-    private Date date_vente;
     private int id_vente;
     private int id_produit;
+    private Date date_vente;
+    private Produit produit;
 
 
-    // Constructor
-    public Vente(int id_produit, int quantiter, Date date_vente) {
+    public Vente(Date date_vente, int id_produit) {
         this.id_produit = id_produit;
-        this.quantiter = quantiter;
         this.date_vente = date_vente;
     }
 
-    
-    public Vente(int id_produit, Date date_vente, int quantiter, Produit produit) {
+
+    // Constructeur standard pour la classe Vente
+    public Vente(int id_vente, int id_produit, Date date_vente, Produit produit) {
+        this.id_vente = id_vente;
         this.id_produit = id_produit;
         this.date_vente = date_vente;
-        this.quantiter = quantiter;
         this.produit = produit;
     }
 
-
-    public int getQuantiter() {
-        return quantiter;
+    // Getter et Setter
+    public int getId_vente() {
+        return id_vente;
     }
 
-    public void setQuantiter(int quantiter) {
-        this.quantiter = quantiter;
+    public void setId_vente(int id_vente) {
+        this.id_vente = id_vente;
+    }
+
+    public int getId_produit() {
+        return id_produit;
+    }
+
+    public void setId_produit(int id_produit) {
+        this.id_produit = id_produit;
     }
 
     public Date getDate() {
@@ -42,19 +48,11 @@ public class Vente {
         this.date_vente = date_vente;
     }
 
-    public int getId_produit(){
-        return id_produit;
+    public Produit getProduit() {
+        return produit;
     }
 
-
-    // Functions
-
-    public String toString() {
-        return "Fournisseur{" +
-        "id_vente=" + id_vente +
-        ", date_vente='" + date_vente + '\'' +
-        ", quantiter='" + quantiter + '\'' + '\'' + 
-        ", id_produit=" + id_produit + 
-        '}';
+    public void setProduit(Produit produit) {
+        this.produit = produit;
     }
 }

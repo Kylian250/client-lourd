@@ -4,25 +4,25 @@ import javax.swing.*;
 import modele.Utilisateur;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class FournisseurView extends JFrame {
     private Utilisateur utilisateur;
-
-    private JFrame frame;
-    private JTextField txtNom;
-    private JTextField txtAdresse;
-    private JTextField txtTelephone;
+    private JTextField txtNom, txtAdresse, txtTelephone;
     private JButton btnAjouterFournisseur;
 
     public FournisseurView(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
-   
-        setTitle("Gestion des Fournisseurs");
-        setLayout(new FlowLayout());
-        setSize(400, 200);
 
-       
+        setTitle("Gestion des Fournisseurs");
+        setSize(400, 250);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Ajoute des marges
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0; gbc.gridy = 0;
 
         JLabel labelNom = new JLabel("Nom du fournisseur :");
         txtNom = new JTextField(20);
@@ -31,18 +31,23 @@ public class FournisseurView extends JFrame {
         JLabel labelTelephone = new JLabel("Téléphone du fournisseur :");
         txtTelephone = new JTextField(20);
         btnAjouterFournisseur = new JButton("Ajouter Fournisseur");
-        frame.add(labelNom);
-        frame.add(txtNom);
-        frame.add(labelAdresse);
-        frame.add(txtAdresse);
-        frame.add(labelTelephone);
-        frame.add(txtTelephone);
-        frame.add(btnAjouterFournisseur);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
 
-        
+        // Ajout des éléments avec positionnement structuré
+        add(labelNom, gbc);
+        gbc.gridy++;
+        add(txtNom, gbc);
+        gbc.gridy++;
+        add(labelAdresse, gbc);
+        gbc.gridy++;
+        add(txtAdresse, gbc);
+        gbc.gridy++;
+        add(labelTelephone, gbc);
+        gbc.gridy++;
+        add(txtTelephone, gbc);
+        gbc.gridy++;
+        add(btnAjouterFournisseur, gbc);
 
+        setVisible(true);
     }
 
     public String getNom() {
@@ -60,10 +65,4 @@ public class FournisseurView extends JFrame {
     public void setAjouterFournisseurListener(ActionListener listener) {
         btnAjouterFournisseur.addActionListener(listener);
     }
-
-   /*  public static void main(String[] args) {
-        // Exemple d'utilisation avec un utilisateur fictif
-        Utilisateur utilisateur = new Utilisateur("manager"); // Remplacer par un utilisateur réel
-        new FournisseurView(utilisateur);
-    }*/
 }

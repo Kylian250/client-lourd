@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -24,6 +25,8 @@ public class ProduitController {
         this.vue = vue;
         this.produitDAO = produitDAO;
         this.venteDAO = venteDAO;
+
+        // Listener pour ajouter un produit
         this.vue.setAjouterProduitListener(e -> {
             String nom = vue.getNomProduit();
             double prix = vue.getPrixProduit();
@@ -32,30 +35,11 @@ public class ProduitController {
             produitDAO.ajouterProduit(produit);
             JOptionPane.showMessageDialog(null, "Produit ajouté !");
         });
+
+        
     }
 
-    public void genererRapport(String produitNom, Date startDate, Date endDate) {
-        Produit produit = produitDAO.getProduitByNom(produitNom);
-        if (produit != null) {
-            // Les dates sont déjà au bon format
-            Date start = startDate;
-            Date end = endDate;
-
-            // Récupérer les ventes pour le produit et la période
-            List<Vente> ventes = venteDAO.getVentesByProduitAndDateRange(produit.getId_produit(), start, end);
-
-            // Calculer les ventes totales
-            int ventesTotales = 0;
-            for (Vente vente : ventes) {
-                ventesTotales += vente.getQuantiter(); // Utilisation de 'quantiter'
-            }
-
-            // Afficher le rapport
-            vue.afficherRapport(produitNom, produit.getPrixUnitaire(), ventesTotales);
-        } else {
-            JOptionPane.showMessageDialog(null, "Produit non trouvé !");
-        }
-    }
+    
 
     public Produit getProduitByNom(String nom) {
         String query = "SELECT * FROM produit WHERE nom = ?";
@@ -73,5 +57,25 @@ public class ProduitController {
             System.out.println("Erreur lors de la récupération du produit : " + e.getMessage());
         }
         return null;
+    }
+
+    // Méthode pour récupérer les produits depuis la base de données
+    public ArrayList<String> getProduitsFromBDD() {
+        ArrayList<String> produits = new ArrayList<>();
+        String query = "SELECT nom, prixUnitaire, quantiter FROM produit"; // Adapté selon la structure de ta BDD
+        try (Connection connection = Connexion.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+            
+            while (resultSet.next()) {
+                String nom = resultSet.getString("nom");
+                double prix = resultSet.getDouble("prixUnitaire");
+                int quantite = resultSet.getInt("quantiter");
+                produits.add("Nom: " + nom + ", Prix: " + prix + ", Quantité: " + quantite);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des produits : " + e.getMessage());
+        }
+        return produits;
     }
 }

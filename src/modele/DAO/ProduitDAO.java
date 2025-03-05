@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import modele.Produit;
 
 public class ProduitDAO {
@@ -59,4 +62,26 @@ public class ProduitDAO {
         // Retourner null si le produit n'a pas été trouvé
         return null;
     }
+
+    public List<Produit> getAllProduits() {
+    List<Produit> produits = new ArrayList<>();
+    String query = "SELECT * FROM produit";
+    try (Connection connection = Connexion.getConnection();
+         PreparedStatement statement = connection.prepareStatement(query);
+         ResultSet resultSet = statement.executeQuery()) {
+         
+         while (resultSet.next()) {
+             int id = resultSet.getInt("id_produit");
+             String nom = resultSet.getString("nom");
+             double prix = resultSet.getDouble("prixUnitaire");
+             int quantite = resultSet.getInt("quantiter");
+             
+             Produit produit = new Produit(id, nom, quantite, prix);
+             produits.add(produit);
+         }
+     } catch (SQLException e) {
+         System.out.println("Erreur lors de la récupération des produits : " + e.getMessage());
+     }
+     return produits;
+}
 }
