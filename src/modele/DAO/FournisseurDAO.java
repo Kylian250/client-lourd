@@ -57,5 +57,41 @@ public class FournisseurDAO {
         }
         return fournisseurs;
     }
+
+    public void modifierFournisseur(Fournisseur fournisseur) {
+        String query = "UPDATE fournisseur SET adress = ?, telephone = ? WHERE nom = ?";
+        try (Connection connection = Connexion.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, fournisseur.getAddress());
+            statement.setString(2, fournisseur.getPhone());
+            statement.setString(3, fournisseur.getName());
+            
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Fournisseur modifié avec succès.");
+            } else {
+                System.out.println("Aucun fournisseur trouvé avec ce nom.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la modification du fournisseur : " + e.getMessage());
+        }
+    }
+
+    public Fournisseur getFournisseurByNom(String nom) {
+        String query = "SELECT * FROM fournisseur WHERE nom = ?";
+        try (Connection connection = Connexion.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, nom);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                String address = resultSet.getString("adress");
+                String telephone = resultSet.getString("telephone");
+                return new Fournisseur(nom, address, telephone);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération du fournisseur : " + e.getMessage());
+        }
+        return null;
+    }
 }
 

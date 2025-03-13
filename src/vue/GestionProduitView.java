@@ -31,10 +31,10 @@ public class GestionProduitView {
         frame.setSize(400, 250);
         frame.setLocationRelativeTo(null);
 
-        JButton ajouterProduitButton = new JButton("Ajouter Produit");
-        JButton modifierProduitButton = new JButton("Modifier Produit");
-        JButton supprimerProduitButton = new JButton("Supprimer Produit");
-        JButton afficherProduitsButton = new JButton("Afficher Liste Produits");
+        JButton ajouterProduitButton = new JButton("Ajouter un produit");
+        JButton modifierProduitButton = new JButton("Modifier un produit");
+        JButton supprimerProduitButton = new JButton("Supprimer un produit");
+        JButton afficherProduitsButton = new JButton("Afficher la liste des produits");
 
         ajouterProduitButton.addActionListener(new ActionListener() {
             @Override
@@ -46,7 +46,17 @@ public class GestionProduitView {
         modifierProduitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code pour modifier un produit
+                String nom = JOptionPane.showInputDialog("Entrez le nom du produit à modifier :");
+                if (nom != null && !nom.trim().isEmpty()) {
+                    ProduitDAO produitDAO = new ProduitDAO();
+                    Produit produit = produitDAO.getProduitByNom(nom);
+                    if (produit != null) {
+                        ProduitView vue = new ProduitView(utilisateur, produit);
+                        new ProduitController(vue, produitDAO, new VenteDAO());
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Produit non trouvé.");
+                    }
+                }
             }
         });
 

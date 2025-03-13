@@ -34,7 +34,6 @@ public class VenteDAO {
         }
     }
  
-    
     public void supprimerVente(int id){
         String query = "DELETE FROM vente WHERE id_vente = ?";
         try (Connection connection = Connexion.getConnection();
@@ -52,7 +51,43 @@ public class VenteDAO {
         }
     }
 
+    public void modifierVente(Vente vente) {
+        String query = "UPDATE vente SET date_vente = ?, id_produit = ? WHERE id_vente = ?";
+        try (Connection connection = Connexion.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setDate(1, vente.getDate());
+            statement.setInt(2, vente.getId_produit());
+            statement.setInt(3, vente.getId_vente());
+            
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Vente modifiée avec succès.");
+            } else {
+                System.out.println("Aucune vente trouvée avec cet ID.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la modification de la vente : " + e.getMessage());
+        }
+    }
 
+    public Vente getVenteById(int id) {
+        String query = "SELECT * FROM vente WHERE id_vente = ?";
+        try (Connection connection = Connexion.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            
+            if (resultSet.next()) {
+                int id_produit = resultSet.getInt("id_produit");
+                Date date_vente = resultSet.getDate("date_vente");
+                Produit produit = new ProduitDAO().getProduitById(id_produit);
+                return new Vente(id, id_produit, date_vente, produit);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération de la vente : " + e.getMessage());
+        }
+        return null;
+    }
 
     public List<Vente> getAllVentes() {
         List<Vente> ventes = new ArrayList<>();

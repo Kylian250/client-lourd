@@ -26,17 +26,29 @@ public class ProduitController {
         this.produitDAO = produitDAO;
         this.venteDAO = venteDAO;
 
-        // Listener pour ajouter un produit
-        this.vue.setAjouterProduitListener(e -> {
-            String nom = vue.getNomProduit();
-            double prix = vue.getPrixProduit();
-            int quantiter = vue.getQuantiterProduit(); // Utilisation de 'quantiter' pour correspondre à la BDD
-            Produit produit = new Produit(nom, quantiter, prix); // L'id sera généré par la DB
-            produitDAO.ajouterProduit(produit);
-            JOptionPane.showMessageDialog(null, "Produit ajouté !");
-        });
+        // Listener unifié pour l'ajout et la modification
+        this.vue.setActionListener(e -> {
+            try {
+                String nom = vue.getNomProduit();
+                double prix = vue.getPrixProduit();
+                int quantiter = vue.getQuantiterProduit();
 
-        
+                if (vue.isModificationMode()) {
+                    // Mode modification
+                    Produit produitModifie = new Produit(nom, quantiter, prix);
+                    produitDAO.modifierProduit(produitModifie);
+                    JOptionPane.showMessageDialog(null, "Produit modifié !");
+                } else {
+                    // Mode ajout
+                    Produit produit = new Produit(nom, quantiter, prix);
+                    produitDAO.ajouterProduit(produit);
+                    JOptionPane.showMessageDialog(null, "Produit ajouté !");
+                }
+                vue.dispose();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Veuillez entrer des valeurs numériques valides pour le prix et la quantité.");
+            }
+        });
     }
 
     

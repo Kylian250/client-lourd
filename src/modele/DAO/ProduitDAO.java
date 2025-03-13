@@ -63,6 +63,29 @@ public class ProduitDAO {
         return null;
     }
 
+    public Produit getProduitById(int id) {
+        String query = "SELECT * FROM produit WHERE id_produit = ?";
+        try (Connection connection = Connexion.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                String nom = resultSet.getString("nom");
+                int quantiter = resultSet.getInt("quantiter");
+                double prixUnitaire = resultSet.getDouble("prixUnitaire");
+
+                // Retourner un objet Produit basé sur les données récupérées
+                return new Produit(id, nom, quantiter, prixUnitaire);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération du produit : " + e.getMessage());
+        }
+
+        // Retourner null si le produit n'a pas été trouvé
+        return null;
+    }
+
     public List<Produit> getAllProduits() {
     List<Produit> produits = new ArrayList<>();
     String query = "SELECT * FROM produit";
@@ -83,5 +106,24 @@ public class ProduitDAO {
          System.out.println("Erreur lors de la récupération des produits : " + e.getMessage());
      }
      return produits;
+}
+
+public void modifierProduit(Produit produit) {
+    String query = "UPDATE produit SET quantiter = ?, prixUnitaire = ? WHERE nom = ?";
+    try (Connection connection = Connexion.getConnection();
+         PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setInt(1, produit.getQuantite());
+        statement.setDouble(2, produit.getPrixUnitaire());
+        statement.setString(3, produit.getNom());
+        
+        int rowsAffected = statement.executeUpdate();
+        if (rowsAffected > 0) {
+            System.out.println("Produit modifié avec succès.");
+        } else {
+            System.out.println("Aucun produit trouvé avec ce nom.");
+        }
+    } catch (SQLException e) {
+        System.out.println("Erreur lors de la modification du produit : " + e.getMessage());
+    }
 }
 }

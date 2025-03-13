@@ -22,10 +22,9 @@ public class MenuPrincipal extends JFrame {
         gbc.gridx = 0; gbc.gridy = 0;
 
         // Création des boutons
-        JButton gestionProduitButton = new JButton("Gestion Produit");
-        JButton gestionVenteButton = new JButton("Gestion Ventes");
-        JButton gestionFournisseurButton = new JButton("Gestion Fournisseur");
-        JButton supprimerProduitButton = new JButton("Supprimer Produit"); // Bouton pour supprimer des produits
+        JButton gestionProduitButton = new JButton("Gestion des produits");
+        JButton gestionVenteButton = new JButton("Gestion des ventes");
+        JButton gestionFournisseurButton = new JButton("Gestion des fournisseurs");
 
         // Ajout des boutons avec positionnement propre
         add(gestionProduitButton, gbc);
@@ -42,9 +41,6 @@ public class MenuPrincipal extends JFrame {
         gestionFournisseurButton.addActionListener(e -> new GestionFournisseurView(utilisateur));
 
         // Désactivation des options en fonction du rôle
-        if (utilisateur.getRole().equals("manager")) {
-            supprimerProduitButton.setEnabled(false); // Désactive le bouton de suppression pour les managers
-        }
 
         setVisible(true); // Toujours à la fin pour éviter les bugs d'affichage
     }

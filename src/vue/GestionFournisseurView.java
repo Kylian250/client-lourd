@@ -19,15 +19,15 @@ public class GestionFournisseurView {
     GestionFournisseurView(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
 
-        frame = new JFrame("Gestion des Fournisseurs");
+        frame = new JFrame("Gestion des fournisseurs");
         frame.setLayout(new FlowLayout());
         frame.setSize(400, 250);
         frame.setLocationRelativeTo(null);
 
-        JButton ajouterFournisseurButton = new JButton("Ajouter Fournisseur");
-        JButton modifierFournisseurButton = new JButton("Modifier Fournisseur");
-        JButton supprimerFournisseurButton = new JButton("Supprimer Fournisseur");
-        JButton afficherFournisseursButton = new JButton("Afficher Liste Fournisseurs");
+        JButton ajouterFournisseurButton = new JButton("Ajouter un fournisseur");
+        JButton modifierFournisseurButton = new JButton("Modifier un fournisseur");
+        JButton supprimerFournisseurButton = new JButton("Supprimer un fournisseur");
+        JButton afficherFournisseursButton = new JButton("Afficher la liste des fournisseurs");
 
         ajouterFournisseurButton.addActionListener(new ActionListener() {
             @Override
@@ -39,7 +39,17 @@ public class GestionFournisseurView {
         modifierFournisseurButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code pour modifier un fournisseur
+                String nom = JOptionPane.showInputDialog("Entrez le nom du fournisseur à modifier :");
+                if (nom != null && !nom.trim().isEmpty()) {
+                    FournisseurDAO fournisseurDAO = new FournisseurDAO();
+                    Fournisseur fournisseur = fournisseurDAO.getFournisseurByNom(nom);
+                    if (fournisseur != null) {
+                        FournisseurView vue = new FournisseurView(utilisateur, fournisseur);
+                        new FournisseurController(vue, fournisseurDAO);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Fournisseur non trouvé.");
+                    }
+                }
             }
         });
 

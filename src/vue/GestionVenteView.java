@@ -2,6 +2,7 @@ package vue;
 
 import javax.swing.*;
 import modele.Utilisateur;
+import modele.Vente;  // Ajout de l'import manquant
 import modele.DAO.ProduitDAO;
 import modele.DAO.VenteDAO;
 import controleur.VenteController;
@@ -20,15 +21,15 @@ public class GestionVenteView {
 
     public GestionVenteView(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
-        frame = new JFrame("Gestion des Ventes");
+        frame = new JFrame("Gestion des ventes");
         frame.setLayout(new FlowLayout());
         frame.setSize(400, 250);
         frame.setLocationRelativeTo(null);
 
-        JButton ajouterVenteButton = new JButton("Ajouter Vente");
-        JButton modifierVenteButton = new JButton("Modifier Vente");
-        JButton supprimerVenteButton = new JButton("Supprimer Vente");
-        JButton listeVentesButton = new JButton("Liste des Ventes");
+        JButton ajouterVenteButton = new JButton("Ajouter une vente");
+        JButton modifierVenteButton = new JButton("Modifier une vente");
+        JButton supprimerVenteButton = new JButton("Supprimer une vente");
+        JButton listeVentesButton = new JButton("Liste des ventes");
 
         ajouterVenteButton.addActionListener(new ActionListener() {
             @Override
@@ -40,7 +41,22 @@ public class GestionVenteView {
         modifierVenteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code pour modifier une vente
+                String idInput = JOptionPane.showInputDialog("Entrez l'ID de la vente à modifier :");
+                if (idInput != null && !idInput.trim().isEmpty()) {
+                    try {
+                        int id = Integer.parseInt(idInput);
+                        VenteDAO venteDAO = new VenteDAO();
+                        Vente vente = venteDAO.getVenteById(id);
+                        if (vente != null) {
+                            VenteView vue = new VenteView(utilisateur, vente);
+                            new VenteController(new ProduitDAO(), vue, venteDAO);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Vente non trouvée.");
+                        }
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "L'ID doit être un nombre valide.");
+                    }
+                }
             }
         });
 

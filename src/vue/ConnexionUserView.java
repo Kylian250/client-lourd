@@ -12,7 +12,7 @@ public class ConnexionUserView extends JFrame {
 
         
         public ConnexionUserView() {
-            setTitle("Login");
+            setTitle("Connexion");
             setLayout(new FlowLayout());
             setSize(300, 150);
             setLocationRelativeTo(null); // Centre la fenêtre correctement avant l'affichage
