@@ -47,10 +47,12 @@ public class FournisseurDAO {
              PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
+                int id = resultSet.getInt("id_fournisseur");
                 String name = resultSet.getString("nom");
                 String address = resultSet.getString("adress");
                 String phone = resultSet.getString("telephone");
-                fournisseurs.add(new Fournisseur(name, address, phone));
+                Fournisseur f = new Fournisseur(id, name, address, phone);
+                fournisseurs.add(f);
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération des fournisseurs : " + e.getMessage());

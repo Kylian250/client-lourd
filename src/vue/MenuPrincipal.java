@@ -25,6 +25,7 @@ public class MenuPrincipal extends JFrame {
         JButton gestionProduitButton = new JButton("Gestion des produits");
         JButton gestionVenteButton = new JButton("Gestion des ventes");
         JButton gestionFournisseurButton = new JButton("Gestion des fournisseurs");
+        JButton gestionCommandeButton = new JButton("Gestion des commandes");
 
         // Ajout des boutons avec positionnement propre
         add(gestionProduitButton, gbc);
@@ -32,13 +33,14 @@ public class MenuPrincipal extends JFrame {
         add(gestionVenteButton, gbc);
         gbc.gridy++;
         add(gestionFournisseurButton, gbc);
+        gbc.gridy++;
+        add(gestionCommandeButton, gbc);
         
-        
-
         // Listeners pour ouvrir les autres vues
         gestionProduitButton.addActionListener(e -> new GestionProduitView(utilisateur));
         gestionVenteButton.addActionListener(e -> new GestionVenteView(utilisateur));
         gestionFournisseurButton.addActionListener(e -> new GestionFournisseurView(utilisateur));
+        gestionCommandeButton.addActionListener(e -> new GestionCommandeView(utilisateur));
 
         // Désactivation des options en fonction du rôle
 

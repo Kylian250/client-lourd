@@ -25,6 +25,15 @@ public class Fournisseur {
         this.produits = produits;
     }
 
+    // Constructeur avec id_fournisseur
+    public Fournisseur(int id_fournisseur, String nom, String address, String telephone) {
+        this.id_fournisseur = id_fournisseur;
+        this.nom = nom;
+        this.address = address;
+        this.telephone = telephone;
+        this.produits = null;
+    }
+
     // Setters & Getters
     public String getName() {
         return nom;
@@ -56,6 +65,16 @@ public class Fournisseur {
 
     public void setProduit(List<Produit> produits) {
         this.produits = produits;
+    }
+
+    // Ajouter le getter pour id_fournisseur
+    public int getId_fournisseur() {
+        return id_fournisseur;
+    }
+
+    // Ajouter le setter pour id_fournisseur
+    public void setId_fournisseur(int id_fournisseur) {
+        this.id_fournisseur = id_fournisseur;
     }
 
     // Méthode toString

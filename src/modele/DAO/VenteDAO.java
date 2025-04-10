@@ -100,9 +100,10 @@ public class VenteDAO {
                 int id_vente = resultSet.getInt("id_vente");
                 int id_produit = resultSet.getInt("id_produit");
                 Date date_vente = resultSet.getDate("date_vente");
-    
-                // Crée l'objet Produit (tu peux récupérer plus de détails sur le produit si nécessaire)
-                Produit produit = new Produit(id_produit, "", 0); // Produit simplifié avec seulement l'id
+
+                // Récupération du produit complet via ProduitDAO
+                ProduitDAO produitDAO = new ProduitDAO();
+                Produit produit = produitDAO.getProduitById(id_produit);
                 ventes.add(new Vente(id_vente, id_produit, date_vente, produit));
             }
         } catch (SQLException e) {

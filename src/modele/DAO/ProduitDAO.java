@@ -11,13 +11,23 @@ import modele.Produit;
 
 public class ProduitDAO {
     public void ajouterProduit(Produit produit) {
-        String query = "INSERT INTO produit (nom, quantiter, prixUnitaire) VALUES (?, ?, ?)";
+        String query = "INSERT INTO produit (nom, quantiter, prixUnitaire, qte_max, qte_alert, id_fournisseur) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connection = Connexion.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
+            
             statement.setString(1, produit.getNom());
             statement.setInt(2, produit.getQuantite());
             statement.setDouble(3, produit.getPrixUnitaire());
-            statement.executeUpdate();
+            statement.setInt(4, produit.getQteMax());
+            statement.setInt(5, produit.getQteAlert());
+            statement.setInt(6, produit.getIdFournisseur());
+
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Produit ajouté avec succès.");
+            } else {
+                System.out.println("Erreur : Le produit n'a pas été ajouté.");
+            }
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout du produit : " + e.getMessage());
         }
@@ -92,20 +102,25 @@ public class ProduitDAO {
     try (Connection connection = Connexion.getConnection();
          PreparedStatement statement = connection.prepareStatement(query);
          ResultSet resultSet = statement.executeQuery()) {
-         
-         while (resultSet.next()) {
-             int id = resultSet.getInt("id_produit");
-             String nom = resultSet.getString("nom");
-             double prix = resultSet.getDouble("prixUnitaire");
-             int quantite = resultSet.getInt("quantiter");
-             
-             Produit produit = new Produit(id, nom, quantite, prix);
-             produits.add(produit);
-         }
-     } catch (SQLException e) {
-         System.out.println("Erreur lors de la récupération des produits : " + e.getMessage());
-     }
-     return produits;
+        
+        while (resultSet.next()) {
+            int id = resultSet.getInt("id_produit");
+            String nom = resultSet.getString("nom");
+            int quantite = resultSet.getInt("quantiter");
+            double prix = resultSet.getDouble("prixUnitaire");
+            int qteMax = resultSet.getInt("qte_max");
+            int qteAlert = resultSet.getInt("qte_alert");
+            int idFournisseur = resultSet.getInt("id_fournisseur");
+            
+            // Log pour déboguer
+            System.out.println("Lecture produit: " + nom + ", Quantité: " + quantite + ", Alerte: " + qteAlert);
+            
+            produits.add(new Produit(id, nom, quantite, prix, qteMax, qteAlert, idFournisseur));
+        }
+    } catch (SQLException e) {
+        System.out.println("Erreur lors de la récupération des produits : " + e.getMessage());
+    }
+    return produits;
 }
 
 public void modifierProduit(Produit produit) {

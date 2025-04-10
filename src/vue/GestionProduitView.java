@@ -10,6 +10,8 @@ import modele.DAO.VenteDAO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import controleur.ProduitController;
 
@@ -91,20 +93,45 @@ public class GestionProduitView {
         afficherProduitsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Récupérer la liste des produits depuis la base de données
                 ProduitDAO produitDAO = new ProduitDAO();
                 List<Produit> produits = produitDAO.getAllProduits();
                 
-                // Afficher la liste dans une fenêtre pop-up ou autre
                 StringBuilder listeProduits = new StringBuilder();
                 for (Produit produit : produits) {
-                    listeProduits.append("Nom: " + produit.getNom() + ", Prix: " + produit.getPrixUnitaire() + ", Quantité: " + produit.getQuantite() + "\n");
+                    listeProduits.append("Nom: " + produit.getNom() + 
+                                      ", Prix: " + produit.getPrixUnitaire() + 
+                                      ", Quantité: " + produit.getQuantite() +
+                                      ", Alerte à: " + produit.getQteAlert() +
+                                      ", Maximum: " + produit.getQteMax() + "\n");
                 }
                 
-                // Afficher la liste dans un JOptionPane
-                JOptionPane.showMessageDialog(null, listeProduits.toString(), "Liste des Produits", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, listeProduits.toString(), 
+                    "Liste des Produits", JOptionPane.INFORMATION_MESSAGE);
             }
         });
+
+        // Ajouter un Timer pour vérifier périodiquement les niveaux de stock
+        Timer stockTimer = new Timer(60000, new ActionListener() { // Changé à 60000 ms (1 minute)
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                verifierNiveauxStock();
+            }
+        });
+        stockTimer.start();
+
+        // Vérifier immédiatement les niveaux de stock à l'ouverture
+        SwingUtilities.invokeLater(() -> {
+            verifierNiveauxStock();
+        });
+
+        // Ajouter un Timer pour vérifier périodiquement les niveaux de stock toutes les 5 minutes
+        Timer stockTimer5Min = new Timer(300000, new ActionListener() { // 300000 ms = 5 minutes
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                verifierNiveauxStock();
+            }
+        });
+        stockTimer5Min.start();
 
         // Ajouter les boutons à la fenêtre
         frame.add(ajouterProduitButton);
@@ -114,5 +141,45 @@ public class GestionProduitView {
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+    }
+
+    private void verifierNiveauxStock() {
+        ProduitDAO produitDAO = new ProduitDAO();
+        List<Produit> produits = produitDAO.getAllProduits();
+        
+        StringBuilder alertMessage = new StringBuilder("Attention! Les produits suivants sont sous le seuil d'alerte:\n\n");
+        boolean stockBas = false;
+        
+        for (Produit produit : produits) {
+            // Ajout de logs pour déboguer
+            System.out.println("Vérification produit: " + produit.getNom());
+            System.out.println("Quantité actuelle: " + produit.getQuantite());
+            System.out.println("Seuil d'alerte: " + produit.getQteAlert());
+            
+            // Si la quantité est inférieure ou égale au seuil d'alerte
+            if (produit.getQuantite() <= produit.getQteAlert()) {
+                stockBas = true;
+                alertMessage.append("- ").append(produit.getNom())
+                          .append(" (Quantité actuelle: ").append(produit.getQuantite())
+                          .append(", Seuil d'alerte: ").append(produit.getQteAlert())
+                          .append(")\n");
+            }
+        }
+        
+        // Si au moins un produit est en stock bas
+        if (stockBas) {
+            // Utilisation de SwingUtilities.invokeLater pour éviter les problèmes de thread
+            SwingUtilities.invokeLater(() -> {
+                int reponse = JOptionPane.showConfirmDialog(frame, 
+                    alertMessage.toString() + "\nVoulez-vous ouvrir la gestion des commandes?",
+                    "Alerte de stock", 
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+                    
+                if (reponse == JOptionPane.YES_OPTION) {
+                    new GestionCommandeView(utilisateur);
+                }
+            });
+        }
     }
 }

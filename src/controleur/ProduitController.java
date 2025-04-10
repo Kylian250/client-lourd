@@ -32,21 +32,28 @@ public class ProduitController {
                 String nom = vue.getNomProduit();
                 double prix = vue.getPrixProduit();
                 int quantiter = vue.getQuantiterProduit();
+                int qteMax = vue.getQteMax();
+                int qteAlert = vue.getQteAlert();
+                int idFournisseur = vue.getIdFournisseur();
 
                 if (vue.isModificationMode()) {
                     // Mode modification
-                    Produit produitModifie = new Produit(nom, quantiter, prix);
+                    Produit produitModifie = new Produit(
+                        nom, quantiter, prix, qteMax, qteAlert, idFournisseur
+                    );
                     produitDAO.modifierProduit(produitModifie);
                     JOptionPane.showMessageDialog(null, "Produit modifié !");
                 } else {
                     // Mode ajout
-                    Produit produit = new Produit(nom, quantiter, prix);
+                    Produit produit = new Produit(
+                        nom, quantiter, prix, qteMax, qteAlert, idFournisseur
+                    );
                     produitDAO.ajouterProduit(produit);
                     JOptionPane.showMessageDialog(null, "Produit ajouté !");
                 }
                 vue.dispose();
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null, "Veuillez entrer des valeurs numériques valides pour le prix et la quantité.");
+                JOptionPane.showMessageDialog(null, "Veuillez entrer des valeurs numériques valides.");
             }
         });
     }
