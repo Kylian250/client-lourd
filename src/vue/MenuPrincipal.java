@@ -2,8 +2,11 @@ package vue;
 
 import javax.swing.*;
 import modele.Utilisateur;
+import utils.WindowManager;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
+import components.RetourButton;
 
 public class MenuPrincipal extends JFrame {
     private Utilisateur utilisateur;
@@ -44,6 +47,6 @@ public class MenuPrincipal extends JFrame {
 
         // Désactivation des options en fonction du rôle
 
-        setVisible(true); // Toujours à la fin pour éviter les bugs d'affichage
+        WindowManager.switchWindow(null,this );
     }
 }

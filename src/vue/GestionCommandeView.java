@@ -4,10 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import modele.DAO.ProduitDAO;
+import utils.WindowManager;
 import modele.DAO.CommandeDAO;
 import modele.Produit;
 import modele.Utilisateur;
 import controleur.CommandeController;
+import components.RetourButton;
 
 public class GestionCommandeView extends JFrame {
     private Utilisateur utilisateur;
@@ -33,9 +35,15 @@ public class GestionCommandeView extends JFrame {
         
         JButton commanderButton = new JButton("Commander");
 
+        // Après l'initialisation des composants
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        RetourButton btnRetour = new RetourButton(this, utilisateur);
+        buttonPanel.add(btnRetour);
+
         setLayout(new BorderLayout());
         add(new JScrollPane(listeProduits), BorderLayout.CENTER);
         add(panelQuantite, BorderLayout.NORTH);
+        add(buttonPanel, BorderLayout.NORTH);
         add(commanderButton, BorderLayout.SOUTH);
 
         // Initialiser le contrôleur
@@ -69,7 +77,7 @@ public class GestionCommandeView extends JFrame {
             }
         });
 
-        setVisible(true);
+        WindowManager.switchWindow(null, this);
     }
 
     private void chargerProduitsAlerte() {

@@ -7,7 +7,9 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
 import modele.DAO.FournisseurDAO;
+import utils.WindowManager;
 import modele.Fournisseur;
+import components.RetourButton;
 
 public class ProduitView extends JFrame {
     private Utilisateur utilisateur;
@@ -35,6 +37,18 @@ public class ProduitView extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Ajouter le bouton retour en haut
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        RetourButton btnRetour = new RetourButton(this, utilisateur);
+        buttonPanel.add(btnRetour);
+
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        add(buttonPanel, gbc);
+
+        // Décaler les autres composants d'une ligne vers le bas
+        gbc.gridwidth = 1;
+        gbc.gridy = 1;
 
         JLabel labelNom = new JLabel("Nom du produit:");
         txtNom = new JTextField(20);
@@ -64,40 +78,40 @@ public class ProduitView extends JFrame {
         // Remplir la combobox avec les fournisseurs
         loadFournisseurs();
 
-        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridx = 0; gbc.gridy = 1;
         add(labelNom, gbc);
         gbc.gridx = 1;
         add(txtNom, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.gridx = 0; gbc.gridy = 2;
         add(labelPrix, gbc);
         gbc.gridx = 1;
         add(txtPrix, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0; gbc.gridy = 3;
         add(labelQuantiter, gbc);
         gbc.gridx = 1;
         add(txtQuantiter, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridx = 0; gbc.gridy = 4;
         add(labelQteMax, gbc);
         gbc.gridx = 1;
         add(txtQteMax, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 4;
+        gbc.gridx = 0; gbc.gridy = 5;
         add(labelQteAlert, gbc);
         gbc.gridx = 1;
         add(txtQteAlert, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 5;
+        gbc.gridx = 0; gbc.gridy = 6;
         add(labelFournisseur, gbc);
         gbc.gridx = 1;
         add(comboFournisseurs, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2;
+        gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2;
         add(btnAction, gbc);
 
-        setVisible(true);
+        WindowManager.switchWindow(null, this);
     }
 
     private void loadFournisseurs() {

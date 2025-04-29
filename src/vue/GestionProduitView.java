@@ -6,12 +6,17 @@ import modele.Produit;
 import modele.Utilisateur;
 import modele.DAO.ProduitDAO;
 import modele.DAO.VenteDAO;
+import utils.WindowManager;
+import components.RetourButton;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
 
 import controleur.ProduitController;
 
@@ -95,18 +100,8 @@ public class GestionProduitView {
             public void actionPerformed(ActionEvent e) {
                 ProduitDAO produitDAO = new ProduitDAO();
                 List<Produit> produits = produitDAO.getAllProduits();
-                
-                StringBuilder listeProduits = new StringBuilder();
-                for (Produit produit : produits) {
-                    listeProduits.append("Nom: " + produit.getNom() + 
-                                      ", Prix: " + produit.getPrixUnitaire() + 
-                                      ", Quantité: " + produit.getQuantite() +
-                                      ", Alerte à: " + produit.getQteAlert() +
-                                      ", Maximum: " + produit.getQteMax() + "\n");
-                }
-                
-                JOptionPane.showMessageDialog(null, listeProduits.toString(), 
-                    "Liste des Produits", JOptionPane.INFORMATION_MESSAGE);
+                TableauProduitsView tableauView = new TableauProduitsView(produits, utilisateur);
+                tableauView.setVisible(true);
             }
         });
 
@@ -133,14 +128,19 @@ public class GestionProduitView {
         });
         stockTimer5Min.start();
 
-        // Ajouter les boutons à la fenêtre
+        // Après l'initialisation du frame
+        RetourButton btnRetour = new RetourButton(frame, utilisateur);
+        frame.add(btnRetour);
+
+        // Ajouter les boutons à la fenêtre dans cet ordre
+        frame.add(btnRetour);
         frame.add(ajouterProduitButton);
         frame.add(modifierProduitButton);
         frame.add(supprimerProduitButton);
         frame.add(afficherProduitsButton);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        WindowManager.switchWindow(null, frame);
     }
 
     private void verifierNiveauxStock() {

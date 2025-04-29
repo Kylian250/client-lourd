@@ -2,9 +2,11 @@ package vue;
 
 import javax.swing.*;
 import modele.Utilisateur;
+import utils.WindowManager;
 import modele.Fournisseur;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import components.RetourButton;
 
 public class FournisseurView extends JFrame {
     private Utilisateur utilisateur;
@@ -32,6 +34,19 @@ public class FournisseurView extends JFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0; gbc.gridy = 0;
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        RetourButton btnRetour = new RetourButton(this, utilisateur);
+        buttonPanel.add(btnRetour);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        add(buttonPanel, gbc);
+
+        // Réinitialiser gridwidth pour les autres composants
+        gbc.gridwidth = 1;
+        gbc.gridy++;
 
         JLabel labelNom = new JLabel("Nom du fournisseur :");
         txtNom = new JTextField(20);
@@ -63,7 +78,7 @@ public class FournisseurView extends JFrame {
         gbc.gridy++;
         add(btnAction, gbc);
 
-        setVisible(true);
+        WindowManager.switchWindow(null, this);
     }
 
     public String getNom() {

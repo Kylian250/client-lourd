@@ -3,6 +3,7 @@ package vue;
 import java.awt.event.ActionListener;
 import modele.Utilisateur;
 import modele.DAO.FournisseurDAO;
+import utils.WindowManager;
 import modele.Fournisseur;
 import controleur.FournisseurController;
 import javax.swing.JButton;
@@ -11,6 +12,7 @@ import javax.swing.JOptionPane;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import components.RetourButton;
 
 public class GestionFournisseurView {
     private Utilisateur utilisateur;
@@ -82,23 +84,23 @@ public class GestionFournisseurView {
             public void actionPerformed(ActionEvent e) {
                 FournisseurDAO fournisseurDAO = new FournisseurDAO();
                 List<Fournisseur> fournisseurs = fournisseurDAO.getAllFournisseurs();
-
-                StringBuilder listeFournisseurs = new StringBuilder();
-                for (Fournisseur fournisseur : fournisseurs) {
-                    listeFournisseurs.append("Nom: " + fournisseur.getName() + ", Adresse: " + fournisseur.getAddress() + ", Téléphone: " + fournisseur.getPhone() + "\n");
-                }
-
-                JOptionPane.showMessageDialog(null, listeFournisseurs.toString(), "Liste des Fournisseurs", JOptionPane.INFORMATION_MESSAGE);
+                TableauFournisseursView tableauView = new TableauFournisseursView(fournisseurs, utilisateur);
+                tableauView.setVisible(true);
             }
         });
 
-        // Ajouter les boutons à la fenêtre
+        // Après l'initialisation du frame
+        RetourButton btnRetour = new RetourButton(frame, utilisateur);
+        frame.add(btnRetour);
+
+        // Ajouter les boutons à la fenêtre dans cet ordre
+        frame.add(btnRetour);
         frame.add(ajouterFournisseurButton);
         frame.add(modifierFournisseurButton);
         frame.add(supprimerFournisseurButton);
         frame.add(afficherFournisseursButton);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        WindowManager.switchWindow(null, frame);
     }
 }

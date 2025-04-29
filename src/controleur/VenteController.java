@@ -24,17 +24,30 @@ public class VenteController {
             try {
                 Date date_vente = vue.getDate_vente();
                 int id_produit = vue.getId_produit();
+                int quantite = vue.getQuantite();
+
+                // Vérifier si la quantité demandée est disponible
+                Produit produit = produitDAO.getProduitById(id_produit);
+                if (produit == null) {
+                    throw new IllegalArgumentException("Produit non trouvé");
+                }
+                if (produit.getQuantite() < quantite) {
+                    throw new IllegalArgumentException("Stock insuffisant");
+                }
 
                 if (vue.isModificationMode()) {
-                    Vente venteModifiee = new Vente(vue.getVenteAModifier().getId_vente(), 
-                                                   id_produit, 
-                                                   date_vente, 
-                                                   produitDAO.getProduitById(id_produit));
+                    Vente venteModifiee = new Vente(
+                        vue.getVenteAModifier().getId_vente(),
+                        id_produit,
+                        date_vente,
+                        produit,
+                        quantite
+                    );
                     venteDAO.modifierVente(venteModifiee);
                     JOptionPane.showMessageDialog(null, "Vente modifiée !");
                 } else {
-                    Vente vente = new Vente(date_vente, id_produit);
-                    venteDAO.ajouterVente(vente);
+                    Vente nouvelleVente = new Vente(date_vente, id_produit, quantite);
+                    venteDAO.ajouterVente(nouvelleVente);
                     JOptionPane.showMessageDialog(null, "Vente ajoutée !");
                 }
                 vue.dispose();

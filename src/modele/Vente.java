@@ -7,20 +7,21 @@ public class Vente {
     private int id_produit;
     private Date date_vente;
     private Produit produit;
+    private int quantite; // Nouvelle propriété
 
-
-    public Vente(Date date_vente, int id_produit) {
+    public Vente(Date date_vente, int id_produit, int quantite) {
         this.id_produit = id_produit;
         this.date_vente = date_vente;
+        this.quantite = quantite;
     }
 
-
     // Constructeur standard pour la classe Vente
-    public Vente(int id_vente, int id_produit, Date date_vente, Produit produit) {
+    public Vente(int id_vente, int id_produit, Date date_vente, Produit produit, int quantite) {
         this.id_vente = id_vente;
         this.id_produit = id_produit;
         this.date_vente = date_vente;
         this.produit = produit;
+        this.quantite = quantite;
     }
 
     // Getter et Setter
@@ -54,5 +55,13 @@ public class Vente {
 
     public void setProduit(Produit produit) {
         this.produit = produit;
+    }
+
+    public int getQuantite() {
+        return quantite;
+    }
+
+    public void setQuantite(int quantite) {
+        this.quantite = quantite;
     }
 }
