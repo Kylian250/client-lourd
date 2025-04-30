@@ -25,36 +25,34 @@ public class FournisseurView extends JFrame {
         this.isModificationMode = (fournisseur != null);
 
         setTitle(isModificationMode ? "Modifier un fournisseur" : "Ajouter un fournisseur");
-        setSize(400, 250);
+        setSize(500, 350);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new GridBagLayout());
 
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // Bouton retour
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         RetourButton btnRetour = new RetourButton(this, utilisateur);
-        buttonPanel.add(btnRetour);
+        topPanel.add(btnRetour);
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        add(buttonPanel, gbc);
-
-        // Réinitialiser gridwidth pour les autres composants
-        gbc.gridwidth = 1;
-        gbc.gridy++;
-
+        // Champs avec tooltips
         JLabel labelNom = new JLabel("Nom du fournisseur :");
         txtNom = new JTextField(20);
-        JLabel labelAdresse = new JLabel("Adresse du fournisseur :");
+        txtNom.setToolTipText("Entrez le nom du fournisseur");
+
+        JLabel labelAdresse = new JLabel("Adresse :");
         txtAdresse = new JTextField(20);
-        JLabel labelTelephone = new JLabel("Téléphone du fournisseur :");
+        txtAdresse.setToolTipText("Entrez l'adresse complète");
+
+        JLabel labelTelephone = new JLabel("Téléphone :");
         txtTelephone = new JTextField(20);
-        btnAction = new JButton(isModificationMode ? "Modifier le fournisseur" : "Ajouter le fournisseur");
+        txtTelephone.setToolTipText("Format: XX XX XX XX XX");
 
         // Pré-remplir les champs si en mode modification
         if (isModificationMode) {
@@ -64,21 +62,35 @@ public class FournisseurView extends JFrame {
             txtNom.setEnabled(false); // On ne permet pas de modifier le nom
         }
 
-        add(labelNom, gbc);
+        // Organisation des composants
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        mainPanel.add(topPanel, gbc);
+
+        gbc.gridwidth = 1;
         gbc.gridy++;
-        add(txtNom, gbc);
+        addFormField(mainPanel, labelNom, txtNom, gbc);
         gbc.gridy++;
-        add(labelAdresse, gbc);
+        addFormField(mainPanel, labelAdresse, txtAdresse, gbc);
         gbc.gridy++;
-        add(txtAdresse, gbc);
-        gbc.gridy++;
-        add(labelTelephone, gbc);
-        gbc.gridy++;
-        add(txtTelephone, gbc);
-        gbc.gridy++;
-        add(btnAction, gbc);
+        addFormField(mainPanel, labelTelephone, txtTelephone, gbc);
+
+        // Bouton d'action
+        btnAction = new JButton(isModificationMode ? "Modifier le fournisseur" : "Ajouter le fournisseur");
+        gbc.gridx = 0; gbc.gridy++; gbc.gridwidth = 2;
+        mainPanel.add(btnAction, gbc);
+
+        add(mainPanel);
 
         WindowManager.switchWindow(null, this);
+    }
+
+    private void addFormField(JPanel panel, JLabel label, JComponent field, GridBagConstraints gbc) {
+        gbc.gridx = 0;
+        gbc.weightx = 0.3;
+        panel.add(label, gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 0.7;
+        panel.add(field, gbc);
     }
 
     public String getNom() {

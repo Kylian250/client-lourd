@@ -24,33 +24,61 @@ public class GestionCommandeView extends JFrame {
         setSize(500, 400);
         setLocationRelativeTo(null);
 
-        modeleListe = new DefaultListModel<>();
-        listeProduits = new JList<>(modeleListe);
-        
+        // Panel principal avec GridBagLayout
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Bouton retour en haut
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        RetourButton btnRetour = new RetourButton(this, utilisateur);
+        buttonPanel.add(btnRetour);
+
+        // Panel pour la quantité
         JPanel panelQuantite = new JPanel(new FlowLayout());
         JLabel lblQuantite = new JLabel("Quantité à commander:");
         txtQuantite = new JTextField(10);
         panelQuantite.add(lblQuantite);
         panelQuantite.add(txtQuantite);
-        
+
+        // Liste des produits
+        modeleListe = new DefaultListModel<>();
+        listeProduits = new JList<>(modeleListe);
+        JScrollPane scrollPane = new JScrollPane(listeProduits);
+        scrollPane.setPreferredSize(new Dimension(450, 200));
+
+        // Bouton commander
         JButton commanderButton = new JButton("Commander");
 
-        // Après l'initialisation des composants
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        RetourButton btnRetour = new RetourButton(this, utilisateur);
-        buttonPanel.add(btnRetour);
+        // Ajout des composants avec GridBagLayout
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        mainPanel.add(buttonPanel, gbc);
 
-        setLayout(new BorderLayout());
-        add(new JScrollPane(listeProduits), BorderLayout.CENTER);
-        add(panelQuantite, BorderLayout.NORTH);
-        add(buttonPanel, BorderLayout.NORTH);
-        add(commanderButton, BorderLayout.SOUTH);
+        gbc.gridy = 1;
+        mainPanel.add(panelQuantite, gbc);
+
+        gbc.gridy = 2;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        mainPanel.add(scrollPane, gbc);
+
+        gbc.gridy = 3;
+        gbc.weighty = 0.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(commanderButton, gbc);
+
+        // Ajout du panel principal
+        add(mainPanel);
 
         // Initialiser le contrôleur
         this.controller = new CommandeController(this, new CommandeDAO(), new ProduitDAO());
 
+        // Charger les produits
         chargerProduitsAlerte();
 
+        // Action du bouton commander
         commanderButton.addActionListener(e -> {
             if (listeProduits.getSelectedValue() != null) {
                 try {
@@ -60,9 +88,8 @@ public class GestionCommandeView extends JFrame {
                         produitInfo.lastIndexOf("ID: ") + 4,
                         produitInfo.lastIndexOf(")")));
                     
-                    // Utiliser le contrôleur pour valider la commande
                     controller.validerCommande(idProduit, quantite);
-                    dispose(); // Fermer la fenêtre après la commande réussie
+                    dispose();
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(this, 
                         "Veuillez entrer une quantité valide",

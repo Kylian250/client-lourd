@@ -29,40 +29,46 @@ public class ProduitView extends JFrame {
         this.isModificationMode = (produit != null);
 
         setTitle(isModificationMode ? "Modifier un produit" : "Ajouter un produit");
-        setSize(400, 250);
+        setSize(500, 400); // Augmentation de la taille
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        setLayout(new GridBagLayout());
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(8, 8, 8, 8); // Augmentation des marges
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
 
-        // Ajouter le bouton retour en haut
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // Bouton retour en haut
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         RetourButton btnRetour = new RetourButton(this, utilisateur);
-        buttonPanel.add(btnRetour);
+        topPanel.add(btnRetour);
 
-        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
-        add(buttonPanel, gbc);
-
-        // Décaler les autres composants d'une ligne vers le bas
-        gbc.gridwidth = 1;
-        gbc.gridy = 1;
-
-        JLabel labelNom = new JLabel("Nom du produit:");
+        // Champs avec des tooltips
+        JLabel labelNom = new JLabel("Nom du produit :");
         txtNom = new JTextField(20);
-        JLabel labelPrix = new JLabel("Prix:");
+        txtNom.setToolTipText("Entrez le nom du produit");
+
+        JLabel labelPrix = new JLabel("Prix :");
         txtPrix = new JTextField(20);
-        JLabel labelQuantiter = new JLabel("Quantité:");
+        txtPrix.setToolTipText("Entrez le prix unitaire");
+
+        JLabel labelQuantiter = new JLabel("Quantité :");
         txtQuantiter = new JTextField(20);
-        JLabel labelQteMax = new JLabel("Quantité maximum:");
+        txtQuantiter.setToolTipText("Entrez la quantité en stock");
+
+        JLabel labelQteMax = new JLabel("Quantité maximum :");
         txtQteMax = new JTextField(20);
-        JLabel labelQteAlert = new JLabel("Quantité alerte:");
+        txtQteMax.setToolTipText("Entrez la quantité maximale autorisée");
+
+        JLabel labelQteAlert = new JLabel("Quantité alerte :");
         txtQteAlert = new JTextField(20);
-        JLabel labelFournisseur = new JLabel("Fournisseur:");
+        txtQteAlert.setToolTipText("Entrez le seuil d'alerte");
+
+        JLabel labelFournisseur = new JLabel("Fournisseur :");
         comboFournisseurs = new JComboBox<>();
-        btnAction = new JButton(isModificationMode ? "Modifier le produit" : "Ajouter le produit");
+        comboFournisseurs.setToolTipText("Sélectionnez le fournisseur");
 
         // Pré-remplir les champs si en mode modification
         if (isModificationMode) {
@@ -78,40 +84,41 @@ public class ProduitView extends JFrame {
         // Remplir la combobox avec les fournisseurs
         loadFournisseurs();
 
-        gbc.gridx = 0; gbc.gridy = 1;
-        add(labelNom, gbc);
-        gbc.gridx = 1;
-        add(txtNom, gbc);
+        // Ajout des composants avec une meilleure organisation
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        mainPanel.add(topPanel, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2;
-        add(labelPrix, gbc);
-        gbc.gridx = 1;
-        add(txtPrix, gbc);
+        gbc.gridwidth = 1;
+        gbc.gridy++;
+        addFormField(mainPanel, labelNom, txtNom, gbc);
+        gbc.gridy++;
+        addFormField(mainPanel, labelPrix, txtPrix, gbc);
+        gbc.gridy++;
+        addFormField(mainPanel, labelQuantiter, txtQuantiter, gbc);
+        gbc.gridy++;
+        addFormField(mainPanel, labelQteMax, txtQteMax, gbc);
+        gbc.gridy++;
+        addFormField(mainPanel, labelQteAlert, txtQteAlert, gbc);
+        gbc.gridy++;
+        addFormField(mainPanel, labelFournisseur, comboFournisseurs, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3;
-        add(labelQuantiter, gbc);
-        gbc.gridx = 1;
-        add(txtQuantiter, gbc);
+        // Bouton d'action
+        btnAction = new JButton(isModificationMode ? "Modifier le produit" : "Ajouter le produit");
+        gbc.gridx = 0; gbc.gridy++; gbc.gridwidth = 2;
+        mainPanel.add(btnAction, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 4;
-        add(labelQteMax, gbc);
-        gbc.gridx = 1;
-        add(txtQteMax, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 5;
-        add(labelQteAlert, gbc);
-        gbc.gridx = 1;
-        add(txtQteAlert, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 6;
-        add(labelFournisseur, gbc);
-        gbc.gridx = 1;
-        add(comboFournisseurs, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2;
-        add(btnAction, gbc);
+        add(mainPanel);
 
         WindowManager.switchWindow(null, this);
+    }
+
+    private void addFormField(JPanel panel, JLabel label, JComponent field, GridBagConstraints gbc) {
+        gbc.gridx = 0;
+        gbc.weightx = 0.3;
+        panel.add(label, gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 0.7;
+        panel.add(field, gbc);
     }
 
     private void loadFournisseurs() {

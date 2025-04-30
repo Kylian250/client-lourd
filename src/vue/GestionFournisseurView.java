@@ -10,6 +10,10 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.BorderLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import components.RetourButton;
@@ -22,9 +26,18 @@ public class GestionFournisseurView {
         this.utilisateur = utilisateur;
 
         frame = new JFrame("Gestion des fournisseurs");
-        frame.setLayout(new FlowLayout());
-        frame.setSize(400, 250);
+        frame.setLayout(new BorderLayout(10, 10));
+        frame.setSize(500, 300);
         frame.setLocationRelativeTo(null);
+
+        // Panel pour le bouton retour
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        RetourButton btnRetour = new RetourButton(frame, utilisateur);
+        topPanel.add(btnRetour);
+
+        // Panel principal pour les boutons
+        JPanel buttonPanel = new JPanel(new GridLayout(4, 1, 10, 10));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JButton ajouterFournisseurButton = new JButton("Ajouter un fournisseur");
         JButton modifierFournisseurButton = new JButton("Modifier un fournisseur");
@@ -34,7 +47,9 @@ public class GestionFournisseurView {
         ajouterFournisseurButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new FournisseurController(new FournisseurView(utilisateur), new FournisseurDAO());
+                FournisseurView vue = new FournisseurView(utilisateur);
+                new FournisseurController(vue, new FournisseurDAO());
+                WindowManager.switchWindow(frame, vue);
             }
         });
 
@@ -48,6 +63,7 @@ public class GestionFournisseurView {
                     if (fournisseur != null) {
                         FournisseurView vue = new FournisseurView(utilisateur, fournisseur);
                         new FournisseurController(vue, fournisseurDAO);
+                        WindowManager.switchWindow(frame, vue);
                     } else {
                         JOptionPane.showMessageDialog(null, "Fournisseur non trouvé.");
                     }
@@ -85,20 +101,19 @@ public class GestionFournisseurView {
                 FournisseurDAO fournisseurDAO = new FournisseurDAO();
                 List<Fournisseur> fournisseurs = fournisseurDAO.getAllFournisseurs();
                 TableauFournisseursView tableauView = new TableauFournisseursView(fournisseurs, utilisateur);
-                tableauView.setVisible(true);
+                WindowManager.switchWindow(frame, tableauView);
             }
         });
 
-        // Après l'initialisation du frame
-        RetourButton btnRetour = new RetourButton(frame, utilisateur);
-        frame.add(btnRetour);
+        // Ajout des boutons au panel
+        buttonPanel.add(ajouterFournisseurButton);
+        buttonPanel.add(modifierFournisseurButton);
+        buttonPanel.add(supprimerFournisseurButton);
+        buttonPanel.add(afficherFournisseursButton);
 
-        // Ajouter les boutons à la fenêtre dans cet ordre
-        frame.add(btnRetour);
-        frame.add(ajouterFournisseurButton);
-        frame.add(modifierFournisseurButton);
-        frame.add(supprimerFournisseurButton);
-        frame.add(afficherFournisseursButton);
+        // Ajout des panels au frame
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(buttonPanel, BorderLayout.CENTER);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         WindowManager.switchWindow(null, frame);

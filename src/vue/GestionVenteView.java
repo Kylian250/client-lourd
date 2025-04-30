@@ -9,7 +9,6 @@ import controleur.VenteController;
 import components.RetourButton;
 import utils.WindowManager;
 
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +16,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.BorderLayout;
+import javax.swing.BorderFactory;
 
 public class GestionVenteView {
     private Utilisateur utilisateur;
@@ -24,10 +26,20 @@ public class GestionVenteView {
 
     public GestionVenteView(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
+
         frame = new JFrame("Gestion des ventes");
-        frame.setLayout(new FlowLayout());
-        frame.setSize(400, 250);
+        frame.setLayout(new BorderLayout(10, 10));
+        frame.setSize(500, 300);
         frame.setLocationRelativeTo(null);
+
+        // Panel pour le bouton retour
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        RetourButton btnRetour = new RetourButton(frame, utilisateur);
+        topPanel.add(btnRetour);
+
+        // Panel principal pour les boutons
+        JPanel buttonPanel = new JPanel(new GridLayout(4, 1, 10, 10));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JButton ajouterVenteButton = new JButton("Ajouter une vente");
         JButton modifierVenteButton = new JButton("Modifier une vente");
@@ -37,7 +49,9 @@ public class GestionVenteView {
         ajouterVenteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new VenteController(new ProduitDAO(), new VenteView(utilisateur), new VenteDAO());
+                VenteView vue = new VenteView(utilisateur);
+                new VenteController(new ProduitDAO(), vue, new VenteDAO());
+                WindowManager.switchWindow(frame, vue);
             }
         });
 
@@ -53,6 +67,7 @@ public class GestionVenteView {
                         if (vente != null) {
                             VenteView vue = new VenteView(utilisateur, vente);
                             new VenteController(new ProduitDAO(), vue, venteDAO);
+                            WindowManager.switchWindow(frame, vue);
                         } else {
                             JOptionPane.showMessageDialog(null, "Vente non trouvée.");
                         }
@@ -109,16 +124,15 @@ public class GestionVenteView {
             supprimerVenteButton.setEnabled(false); // Grise le bouton
         }
 
-        // Après l'initialisation du frame
-        RetourButton btnRetour = new RetourButton(frame, utilisateur);
-        frame.add(btnRetour);
+        // Ajout des boutons au panel
+        buttonPanel.add(ajouterVenteButton);
+        buttonPanel.add(modifierVenteButton);
+        buttonPanel.add(supprimerVenteButton);
+        buttonPanel.add(afficherVentesButton);
 
-        // Ajouter les boutons à la fenêtre dans cet ordre
-        frame.add(btnRetour);
-        frame.add(ajouterVenteButton);
-        frame.add(modifierVenteButton);
-        frame.add(supprimerVenteButton);
-        frame.add(afficherVentesButton);  // Ajoute le bouton Afficher les Ventes
+        // Ajout des panels au frame
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(buttonPanel, BorderLayout.CENTER);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         WindowManager.switchWindow(null, frame);

@@ -22,8 +22,9 @@ public class ConnexionUserView extends JFrame {
         JLabel motDePasseLabel = new JLabel("Mot de passe:");
         JPasswordField motDePasseField = new JPasswordField(15);
         JButton loginButton = new JButton("Se connecter");
-    
-        loginButton.addActionListener(new ActionListener() {
+
+        // Créer une méthode de connexion réutilisable
+        ActionListener loginAction = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nom = nomField.getText();
@@ -40,6 +41,29 @@ public class ConnexionUserView extends JFrame {
                         "Nom d'utilisateur ou mot de passe incorrect !");
                 }
             }
+        };
+    
+        // Ajouter l'action au bouton
+        loginButton.addActionListener(loginAction);
+
+        // Ajouter l'action sur la touche Enter pour le champ mot de passe
+        motDePasseField.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+                    loginAction.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+                }
+            }
+        });
+
+        // Ajouter l'action sur la touche Enter pour le champ nom d'utilisateur
+        nomField.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+                    motDePasseField.requestFocus(); // Passe au champ mot de passe
+                }
+            }
         });
     
         add(nomLabel);
@@ -47,5 +71,8 @@ public class ConnexionUserView extends JFrame {
         add(motDePasseLabel);
         add(motDePasseField);
         add(loginButton);
+
+        // Donner le focus au champ nom d'utilisateur au démarrage
+        nomField.requestFocus();
     }
 }

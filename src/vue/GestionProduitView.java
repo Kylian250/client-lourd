@@ -8,6 +8,7 @@ import modele.DAO.ProduitDAO;
 import modele.DAO.VenteDAO;
 import utils.WindowManager;
 import components.RetourButton;
+import controleur.ProduitController;  // Ajout de cet import
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,10 +18,12 @@ import javax.swing.Timer;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
-
-import controleur.ProduitController;
+import javax.swing.JPanel;
+import javax.swing.BorderFactory;
 
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
@@ -34,9 +37,18 @@ public class GestionProduitView {
         this.utilisateur = utilisateur;
 
         frame = new JFrame("Gestion des produits");
-        frame.setLayout(new FlowLayout());
-        frame.setSize(400, 250);
+        frame.setLayout(new BorderLayout(10, 10)); // Ajout de marges
+        frame.setSize(500, 300);
         frame.setLocationRelativeTo(null);
+
+        // Création du panel pour le bouton retour
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        RetourButton btnRetour = new RetourButton(frame, utilisateur);
+        topPanel.add(btnRetour);
+
+        // Création du panel principal pour les boutons
+        JPanel buttonPanel = new JPanel(new GridLayout(4, 1, 10, 10)); // 4 lignes, 1 colonne, gaps de 10px
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Marges internes
 
         JButton ajouterProduitButton = new JButton("Ajouter un produit");
         JButton modifierProduitButton = new JButton("Modifier un produit");
@@ -46,7 +58,9 @@ public class GestionProduitView {
         ajouterProduitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new ProduitController(new ProduitView(utilisateur),new ProduitDAO(),new VenteDAO());
+                ProduitView vue = new ProduitView(utilisateur);
+                new ProduitController(vue, new ProduitDAO(), new VenteDAO());
+                WindowManager.switchWindow(frame, vue);
             }
         });
 
@@ -60,6 +74,7 @@ public class GestionProduitView {
                     if (produit != null) {
                         ProduitView vue = new ProduitView(utilisateur, produit);
                         new ProduitController(vue, produitDAO, new VenteDAO());
+                        WindowManager.switchWindow(frame, vue);
                     } else {
                         JOptionPane.showMessageDialog(null, "Produit non trouvé.");
                     }
@@ -128,16 +143,15 @@ public class GestionProduitView {
         });
         stockTimer5Min.start();
 
-        // Après l'initialisation du frame
-        RetourButton btnRetour = new RetourButton(frame, utilisateur);
-        frame.add(btnRetour);
+        // Ajout des boutons au panel
+        buttonPanel.add(ajouterProduitButton);
+        buttonPanel.add(modifierProduitButton);
+        buttonPanel.add(supprimerProduitButton);
+        buttonPanel.add(afficherProduitsButton);
 
-        // Ajouter les boutons à la fenêtre dans cet ordre
-        frame.add(btnRetour);
-        frame.add(ajouterProduitButton);
-        frame.add(modifierProduitButton);
-        frame.add(supprimerProduitButton);
-        frame.add(afficherProduitsButton);
+        // Ajout des panels au frame
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(buttonPanel, BorderLayout.CENTER);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         WindowManager.switchWindow(null, frame);
